@@ -1,0 +1,113 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>자유게시판 예시</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  h1 {
+    text-align: center;
+  }
+  #userInput {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  li {
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+  <h1>설문조사</h1>
+  <p style="text-align: left;">??? : 설문에 응해주신 당신에게 특별히 설사약맛 샴페인 100잔 쿠폰을 드리죠~*</p>
+  <p style="text-align: left;">***선생님들도 보실 수 있기 때문에 부적절한 말을 삼가주세요.***</p>
+  <div style="text-align : center;">
+
+     <img src="images/img.png" alt="이미지" width="100%" style="max-width: 300px; height: auto;"><br>
+
+</div>
+  <textarea id="userInput" rows="6" cols="40"></textarea><br>
+  <button onclick="saveData()">저장하기</button>
+  <div id="savedData"></div>
+
+  <script>
+    // 초기화: localStorage에서 저장된 데이터를 불러와서 화면에 표시
+    window.onload = function() {
+      loadData();
+    };
+
+    // 저장된 데이터를 화면에 표시하는 함수
+    function loadData() {
+      var savedData = JSON.parse(localStorage.getItem('userInputs')) || [];
+      var savedDataHtml = '';
+
+      if (savedData.length > 0) {
+        savedDataHtml += '<h2>소중한 의견 감사합니다</h2>';
+        savedDataHtml += '<ul>';
+        savedData.forEach(function(data, index) {
+          savedDataHtml += '<li>' + data + ' <button onclick="deleteData(' + index + ')">삭제</button></li>';
+        });
+        savedDataHtml += '</ul>';
+      } else {
+        savedDataHtml = '저장된 데이터가 없습니다.';
+      }
+
+      document.getElementById('savedData').innerHTML = savedDataHtml;
+    }
+
+    // 입력된 데이터를 저장하는 함수
+    function saveData() {
+      var userInput = document.getElementById('userInput').value.trim();
+
+      if (userInput !== '') {
+        var savedData = JSON.parse(localStorage.getItem('userInputs')) || [];
+        savedData.push(userInput);
+        localStorage.setItem('userInputs', JSON.stringify(savedData));
+        document.getElementById('userInput').value = ''; // 입력칸 초기화
+        loadData(); // 저장된 데이터를 다시 불러와서 화면에 업데이트
+      } else {
+        alert('입력된 내용이 없습니다.');
+      }
+    }
+
+    // 선택된 데이터를 삭제하는 함수
+    function deleteData(index) {
+      var savedData = JSON.parse(localStorage.getItem('userInputs')) || [];
+
+      if (index > -1 && index < savedData.length) {
+        savedData.splice(index, 1); // 해당 인덱스의 데이터 삭제
+        localStorage.setItem('userInputs', JSON.stringify(savedData));
+        loadData(); // 저장된 데이터를 다시 불러와서 화면에 업데이트
+      }
+    }
+  </script>
+</body>
+</html>
